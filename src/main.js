@@ -172,6 +172,10 @@ function delById(id) {
 }
 // 根据名称或id打开
 function open(name) {
+  if (!name) {
+    execCommand("open -h")
+    return
+  }
   name = name.trim();
   const config = readConfig();
   if (!config.userData) {
