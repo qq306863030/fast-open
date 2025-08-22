@@ -1,7 +1,7 @@
 {
   "name": "fast-open",
   "description": "In a Windows environment, you can use commands to quickly open preset directories, and you can also configure them as shortcut commands to execute other operations.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "license": "MIT",
   "repository": {
@@ -24,8 +24,10 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "commander": "8.1.0",
+    "console-table-printer": "^2.14.6",
     "dayjs": "^1.11.13",
     "fs-extra": "8.1.0",
+    "lodash": "^4.17.21",
     "shelljs": "^0.10.0"
   },
   "devDependencies": {

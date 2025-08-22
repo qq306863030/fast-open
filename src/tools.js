@@ -3,6 +3,8 @@ const path = require("path");
 const chalk = require("chalk");
 const shell = require('shelljs');
 const dayjs = require("dayjs");
+const lodash = require("lodash");
+const { Table } = require('console-table-printer');
 
 // 读取执行命令目录下的配置文件
 function readConfig() {
@@ -54,8 +56,30 @@ function getVersion() {
 
 function printTable(list, columns) {
   if (list.length) {
+    list = lodash.cloneDeep(list)
+    if (columns) {
+      list.forEach(item => {
+        for (const key of Object.keys(item)) {
+          if (!columns.includes(key)) {
+            delete item[key];
+          }
+        }
+      });
+    }
     columns = columns || Object.keys(list[list.length - 1]);
-    console.table(list, columns);
+    const yellowKeys = ['id', 'useCount']
+    const columnsOpt = columns.map(column => {
+      return {
+        name : column,
+        alignment : 'center',
+        color: yellowKeys.includes(column)? 'yellow' : 'green'
+      }
+    })
+    const table = new Table({
+      columns: columnsOpt
+    });
+    table.addRows(list);
+    table.printTable();
   } else {
     console.log("暂无数据");
   }

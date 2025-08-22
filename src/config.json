@@ -95,6 +95,14 @@
       "tool": "explorer",
       "description": "companyrecord",
       "useCount": 2
+    },
+    {
+      "id": 12,
+      "name": "jiushan",
+      "dirPath": "D:\\code\\company\\project\\jiushan",
+      "tool": "explorer",
+      "description": "jiushan",
+      "useCount": 0
     }
   ],
   "userTools": {
