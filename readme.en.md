@@ -38,8 +38,8 @@ open reset # Reset the configuration file
 open list|ls|l
 # Open the directory
 open name|configuration item id|description
-open name [name]
-open id [configuration item id]
+open -n [name]
+open -i [configuration item id]
 # Add a tool
 open ta vscode code
 ```

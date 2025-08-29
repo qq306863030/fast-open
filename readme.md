@@ -41,8 +41,8 @@ open reset # 重置配置文件
 open list|ls|l
 # 打开目录
 open 名称|配置项目的id|描述
-open name 名称
-open id 配置项目的id
+open -n 名称
+open -i 配置项目的id
 # 添加工具
 open ta vscode code
 ```
