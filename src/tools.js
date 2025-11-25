@@ -5,10 +5,11 @@ const shell = require('shelljs');
 const dayjs = require("dayjs");
 const lodash = require("lodash");
 const { Table } = require('console-table-printer');
+const os = require('os');
 
 // 读取执行命令目录下的配置文件
 function readConfig() {
-  const configPath = path.resolve(__dirname, "./config.json")
+  const configPath = getConfigPath()
   if (fs.pathExistsSync(configPath)) {
     return fs.readJsonSync(configPath);
   } else {
@@ -21,16 +22,16 @@ function readConfig() {
 }
 
 function writeConfig(config) {
-  const configPath = path.resolve(__dirname, "./config.json")
+  const configPath = getConfigPath()
   fs.writeJsonSync(configPath, config, { spaces: 2 });
 }
 
 // 打开配置文件
 function openConfig() {
-  const configPath = path.resolve(__dirname, "./config.json")
+  const configPath = getConfigPath()
   // 判断文件是否存在
   if (!fs.pathExistsSync(configPath)) {
-    logRed("配置文件不存在，请先创建配置文件或输入open reset命令重置配置文件");
+    logRed("配置文件不存在，请输入open reset命令创建配置文件");
     return;
   }
   logBlue('编辑文件路径：' + configPath)
@@ -40,6 +41,12 @@ function openConfig() {
   } else {
     shell.exec(`notepad ${configPath}`)
   }
+}
+
+// 获取配置文件路径
+function getConfigPath() {
+  const userHomeDir = os.homedir();
+  return path.resolve(userHomeDir, "./.fast-open-config.json")
 }
 
 // 执行一段命令
