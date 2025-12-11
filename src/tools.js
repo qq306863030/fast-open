@@ -7,16 +7,35 @@ const lodash = require("lodash");
 const { Table } = require('console-table-printer');
 const os = require('os');
 
+// 写入默认值,兼容旧版本
+function writeDefaultConfig() {
+  const config = readConfig();
+  if (!config.options) {
+    const defualtConfig = readConfig(true)
+    defualtConfig.userData = config.userData || []
+    defualtConfig.userTools = config.userTools || []
+    writeConfig(defualtConfig)
+    return defualtConfig
+  }
+  return config
+}
+
 // 读取执行命令目录下的配置文件
-function readConfig() {
+function readConfig(isDefault = false) {
   const configPath = getConfigPath()
-  if (fs.pathExistsSync(configPath)) {
+  if (!isDefault && configPath && fs.pathExistsSync(configPath)) {
     return fs.readJsonSync(configPath);
   } else {
     return {
+      options: {
+        version: getVersion(),
+        defaultTableColumns: ["id", "name", "useCount", "description"], // 默认显示的表格列
+        defaultTableSortBy: "id", // 默认排序的列名，为空时默认按id排序
+        defaultTool: "explorer",
+      },
       userData: [],
       userTools: {},
-      defaultTool: "explorer"
+      userCommand: [], // 命令列表 { name: "", command: ["", ""] }
     }
   }
 }
@@ -43,6 +62,24 @@ function openConfig() {
   }
 }
 
+// 打开文档
+function openReadme() {
+  const readmePath = path.resolve(__dirname, '../readme.md')
+  // 判断文件是否存在
+  if (!fs.pathExistsSync(readmePath)) {
+    const readmeUrl = 'https://github.com/qq306863030/fast-open/blob/master/readme.md'
+    logRed("文档不存在，请访问" + readmeUrl);
+    return;
+  }
+  logBlue('文档路径：' + readmePath)
+  const res = isInstalledVSCode()
+  if (res) {
+    shell.exec(`code -n ${readmePath}`)
+  } else {
+    shell.exec(`notepad ${readmePath}`)
+  }
+}
+
 // 获取配置文件路径
 function getConfigPath() {
   const userHomeDir = os.homedir();
@@ -54,10 +91,16 @@ function execCommand(command) {
   return shell.exec(command).stdout.trim();
 }
 
-// 获取版本
-function getVersion() {
+function getPackgeJson() {
   const packagePath = path.resolve(__dirname, "../package.json");
   const package = fs.readJsonSync(packagePath);
+  return package;
+}
+
+
+// 获取版本
+function getVersion() {
+  const package = getPackgeJson();
   return package.version;
 }
 
@@ -139,7 +182,9 @@ module.exports = {
   logRed,
   getVersion,
   openConfig,
+  openReadme,
   getID,
   printTable,
-  execCommand
+  execCommand,
+  writeDefaultConfig
 };

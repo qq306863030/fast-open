@@ -15,34 +15,63 @@ npm install fast-open -g
 ## 使用
 ```bash
 # 使用op|open|fast-open执行命令
-open list|ls|l # [filterKey] 查看列表
-open add [name][path][tool][description] # 添加目录
-open add d <description> # 添加目录
-open del <name|id> # 删除配置
-open edit # 编辑配置文件
-open <name|id|description> # 快速打开指定名称的目录
-open -n <name> # 快速打开指定名称的目录
-open -i <id> # 快速打开指定id的目录
-tool-list|tl [filterKeyWords] # 查看工具列表
-tool-add|ta <toolName> [toolPath] # 添加工具
-tool-del|td <toolName> # 删除工具
-open reset # 重置配置文件
-```
+open list|ls|l # 查看目录列表
+open ls -a, --all 查看列表全部列
+open ls -r, --reverse 列表反转
+open ls -s, --sort <colomnName> 按列名排序列表
+open ls -f, --filter <filterKeyWords> 按关键字过滤列表
+[示例]: open ls -a -r -s useCount -f ai # 列出全部列，按列useCount排序, 反转列表，仅显示名称或描述中包含ai字符的项目
+open [name|id|description|cmd] # 快速打开指定名称的目录
+open -i, --id <id> 根据ID打开
+open -n, --name <name> 根据名称打开
+open -d, --description <description> 根据描述打开
+open -c, --cmd <cmdName> 执行命令行
+[示例1]: open abc # 打开id、名称、描述、命令行列表名称中为abc或包含abc的项目
+[示例2]: open -i 1 # 打开id为1的项目
+[示例3]: open -n abc # 打开名称为abc或包含abc的项目
+[示例4]: open -d abc # 打开描述为abc或包含abc的项目
+[示例5]: open -c push # 执行命令行列表中为push的命令，需要在配置文件中手动配置命令行,参考添加命令行示例
+open add [name,path,tool,description] # 添加目录
+open add -n, --name <name> 添加名称
+open add -p, --path <path> 添加描述
+open add -t, --tool <toolName> 添加打开工具，需要预制，默认为explorer
+open add -d, --description <description> 添加描述
+[示例1]: open add # 会自动添加[当前目录名称][当前目录路径][""][""]在配置文件中
+[示例2]: open add -n aaa -p c:/1.txt -t vscode -d bbb # 会自动添加[aaa,c:/1.txt,vscode,bbb]在配置文件[name,path,tool,description]中
+open del [name|id...] # 删除配置
+open del -i, --id <id...> # 根据id删除
+open del -n, --name <name...> # 根据名称删除
+[示例1]: open del aaa,bbb,ccc # 删除名称或id为aaa、bbb、ccc的配置项
+[示例2]: open del -i 1,2,3 # 删除id为1、2、3的配置项
+[示例3]: open del -n aaa,bbb # 删除名称为aaa、bbb的配置项
+open tool-list|tl # 查看工具列表
+open tl -f <filterKeyWords> # 按关键字过滤工具列表
+[示例1]: open tl # 列出全部工具
+[示例2]: open tl -f vscode # 列出名称中包含vscode的工具
+open tool-add|ta <toolName, toolPath> # 添加工具
+[示例]: open ta vscode,c:/Users/admin/AppData/Local/Programs/Microsoft VS Code/Code.exe # 添加vscode工具，路径为c:/Users/admin/AppData/Local/Programs/Microsoft VS Code/Code.exe
+open tool-del|td <toolName> # 删除工具
+[示例]: open td vscode # 删除名称为vscode的工具
+open edit # 手动编辑配置文件
+open reset # 恢复配置文件为默认值
+open help # 查看帮助文档
+open me # 打开源代码目录
 
-## 示例
-```bash
-# 添加目录
-1. open add # 在控制台直接执行open add命令，会自动添加[目录名称][当前目录路径][explorer][""]在配置文件中
-2. open add ,,vscode,描述：使用vscode打开当前目录 # 添加[目录名称][当前目录路径][vscode][描述：使用vscode打开当前目录]在配置文件中，使用vscode打开当前目录的配置
-3. open ta empty # 添加空工具
-   open add 自定义命令,"explorer C:",empty,描述：打开C盘 # 添加[自定义命令]["explorer C:"][empty][描述：打开C盘]在配置文件中，打开C盘的配置
-   open add push,"git pull&&git add .&&git commit -m 更新&&git push",empty,gitpush # 控制台输入open push即可提交代码
-# 查看目录
-open list|ls|l
-# 打开目录
-open 名称|配置项目的id|描述
-open -n 名称
-open -i 配置项目的id
-# 添加工具
-open ta vscode code
+# 添加自定义命令行
+# 1. open edit打开配置文件
+# 2. 在配置项中添加userCommand字段，数据结构为{ "name": "", "command": [] }数组
+# sample:
+"userCommand": [
+    {
+      "name": "push",
+      "command": [
+        "git pull",
+        "git add .",
+        "git commit -m 更新",
+        "git push"
+      ]
+    }
+  ]
+# 3. 保存并退出
+# 4. 打开命令行输入open push或open -c push即可执行自定义命令行
 ```
