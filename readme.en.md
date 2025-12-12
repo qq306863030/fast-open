@@ -12,54 +12,81 @@
 npm install fast-open -g 
 ```
 
-## Usage
+## Quick Start
+```bash 
+# 1. Navigate to any directory, open the command line, and enter open add
+# 2. Exit the directory, enter open ls to view the directory list
+# 3. Enter open <id|name> to open the specified directory
+# 4. Enter open -t vscode <id|name> to open the specified directory with vscode (vscode needs to be installed)
+```
+
+## Command List
 ```bash
-# Use op|open|fast-open to execute commands
+# Commands can be executed using op|open|fast-open
+
 open list|ls|l # View directory list
-open ls -a, --all View all columns in the list
+open ls -a, --all View all columns of the list
 open ls -r, --reverse Reverse the list
 open ls -s, --sort <colomnName> Sort the list by column name
 open ls -f, --filter <filterKeyWords> Filter the list by keywords
-[Example]: open ls -a -r -s useCount -f ai # List all columns, sort by the useCount column, reverse the list, and only display items whose name or description contains the character "ai"
-open [name|id|description|cmd] # Quickly open the specified directory
+[Example]: open ls -a -r -s useCount -f ai # List all columns, sort by column useCount, reverse the list, and only display items whose name or description contains the character "ai"
+
+
+open [name|id|description|cmd] # Quickly open the directory with the specified name
 open -i, --id <id> Open by ID
 open -n, --name <name> Open by name
 open -d, --description <description> Open by description
 open -c, --cmd <cmdName> Execute command line
-[Example 1]: open abc # Open items whose id, name, description, or command line list name is "abc" or contains "abc"
+open -t, --tool <toolName> Set the default opening tool, which needs to be a tool that can be executed directly in the console (such as notepad, etc.) or a custom tool in the configuration (refer to the "open tool-add" command), default is explorer
+[Example 1]: open abc # Open items where id, name, description, or command line list name is abc or contains abc
 [Example 2]: open -i 1 # Open the item with id 1
-[Example 3]: open -n abc # Open items whose name is "abc" or contains "abc"
-[Example 4]: open -d abc # Open items whose description is "abc" or contains "abc"
-[Example 5]: open -c push # Execute the command in the command line list named "push". You need to manually configure the command line in the configuration file. Refer to the example of adding a command line.
+[Example 3]: open -n abc # Open items whose name is abc or contains abc
+[Example 4]: open -d abc # Open items whose description is abc or contains abc
+[Example 5]: open -c push # Execute the command with the name "push" in the command line list, which needs to be manually configured in the configuration file, refer to the example of adding command lines
+
+
 open add [name,path,tool,description] # Add directory
 open add -n, --name <name> Add name
 open add -p, --path <path> Add path
-open add -t, --tool <toolName> Add opening tool, needs to be pre-configured, default is explorer
+open add -t, --tool <toolName> Add opening tool, which needs to be a tool that can be executed directly in the console (such as notepad, etc.) or a custom tool in the configuration (refer to the "open tool-add" command), default is explorer
 open add -d, --description <description> Add description
-[Example 1]: open add # Will automatically add [current directory name][current directory path][""][""] to the configuration file
-[Example 2]: open add -n aaa -p c:/1.txt -t vscode -d bbb # Will automatically add [aaa,c:/1.txt,vscode,bbb] to the configuration file in the format [name,path,tool,description]
+[Example 1]: open add # Will automatically add [current directory name][current directory path][""][""] in the configuration file
+[Example 2]: open add -n aaa -p c:/1.txt -t vscode -d bbb # Will automatically add [aaa,c:/1.txt,vscode,bbb] in the configuration file [name,path,tool,description]
+
+
 open del [name|id...] # Delete configuration
 open del -i, --id <id...> # Delete by id
 open del -n, --name <name...> # Delete by name
 [Example 1]: open del aaa,bbb,ccc # Delete configuration items whose name or id is aaa, bbb, ccc
 [Example 2]: open del -i 1,2,3 # Delete configuration items with id 1, 2, 3
 [Example 3]: open del -n aaa,bbb # Delete configuration items with name aaa, bbb
+
+
 open tool-list|tl # View tool list
 open tl -f <filterKeyWords> # Filter tool list by keywords
 [Example 1]: open tl # List all tools
-[Example 2]: open tl -f vscode # List tools whose name contains "vscode"
+[Example 2]: open tl -f vscode # List tools whose name contains vscode
+
+
 open tool-add|ta <toolName, toolPath> # Add tool
-[Example]: open ta vscode,c:/Users/admin/AppData/Local/Programs/Microsoft VS Code/Code.exe # Add vscode tool with path c:/Users/admin/AppData/Local/Programs/Microsoft VS Code/Code.exe
+[Example]: open ta typora,D:/soft/Typora/Typora.exe # Add typora tool, application path. Open directory or file with typora: open -t typora <id|name|description>
+
+
 open tool-del|td <toolName> # Delete tool
-[Example]: open td vscode # Delete the tool named "vscode"
+[Example]: open td vscode # Delete the tool with name vscode
+
+
 open edit # Manually edit the configuration file
 open reset # Restore the configuration file to default values
 open help # View help documentation
 open me # Open the source code directory
+```
 
+## Configuration File
+```bash
 # Add custom command lines
 # 1. Open the configuration file with open edit
-# 2. Add the userCommand field in the configuration item, the data structure is an array of { "name": "", "command": [] }
+# 2. Add the userCommand field in the configuration items, the data structure is an array of { "name": "", "command": [] }
 # sample:
 "userCommand": [
     {
@@ -74,4 +101,18 @@ open me # Open the source code directory
   ]
 # 3. Save and exit
 # 4. Open the command line and enter open push or open -c push to execute the custom command line
+
+
+# Modify default configuration
+# 1. Open the configuration file with open edit
+# 2. Modify the configuration items
+"options": {
+    # The columns displayed by default when entering open ls, you can add columns and modify the display order
+    "defaultTableColumns": ["id", "name", "tool", "description", "useCount"],
+    # The default sorting column name when entering open ls, note: if a non-existent column name is entered, no sorting will be performed
+    "defaultTableSortBy": "id",
+    # If no default opening tool is set, this configuration item will be used
+    "defaultTool": "explorer"
+  }
+# 3. Save and exit
 ```

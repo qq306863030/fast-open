@@ -12,51 +12,78 @@
 npm install fast-open -g 
 ```
 
-## 使用
+## 快速开始
+```bash 
+# 1. 进入任意目录打开命令行，输入open add
+# 2. 退出目录，输入open ls查看目录列表
+# 3. 输入open <id|name> 打开指定目录
+# 4. 输入open -t vscode <id|name> 使用vscode打开指定目录（需要安装vscode）
+```
+
+## 命令列表
 ```bash
-# 使用op|open|fast-open执行命令
+# 可使用op|open|fast-open执行命令
+
 open list|ls|l # 查看目录列表
 open ls -a, --all 查看列表全部列
 open ls -r, --reverse 列表反转
 open ls -s, --sort <colomnName> 按列名排序列表
 open ls -f, --filter <filterKeyWords> 按关键字过滤列表
 [示例]: open ls -a -r -s useCount -f ai # 列出全部列，按列useCount排序, 反转列表，仅显示名称或描述中包含ai字符的项目
+
+
 open [name|id|description|cmd] # 快速打开指定名称的目录
 open -i, --id <id> 根据ID打开
 open -n, --name <name> 根据名称打开
 open -d, --description <description> 根据描述打开
 open -c, --cmd <cmdName> 执行命令行
+open -t, --tool <toolName> 设置默认打开工具，需要使用控制台能直接执行的工具(如notepad等)或在配置的自定义工具(参考"open tool-add"命令)，默认为explorer
 [示例1]: open abc # 打开id、名称、描述、命令行列表名称中为abc或包含abc的项目
 [示例2]: open -i 1 # 打开id为1的项目
 [示例3]: open -n abc # 打开名称为abc或包含abc的项目
 [示例4]: open -d abc # 打开描述为abc或包含abc的项目
 [示例5]: open -c push # 执行命令行列表中为push的命令，需要在配置文件中手动配置命令行,参考添加命令行示例
+
+
 open add [name,path,tool,description] # 添加目录
 open add -n, --name <name> 添加名称
 open add -p, --path <path> 添加描述
-open add -t, --tool <toolName> 添加打开工具，需要预制，默认为explorer
+open add -t, --tool <toolName> 添加打开工具，需要使用控制台能直接执行的工具(如notepad等)或在配置的自定义工具(参考"open tool-add"命令)，默认为explorer
 open add -d, --description <description> 添加描述
 [示例1]: open add # 会自动添加[当前目录名称][当前目录路径][""][""]在配置文件中
 [示例2]: open add -n aaa -p c:/1.txt -t vscode -d bbb # 会自动添加[aaa,c:/1.txt,vscode,bbb]在配置文件[name,path,tool,description]中
+
+
 open del [name|id...] # 删除配置
 open del -i, --id <id...> # 根据id删除
 open del -n, --name <name...> # 根据名称删除
 [示例1]: open del aaa,bbb,ccc # 删除名称或id为aaa、bbb、ccc的配置项
 [示例2]: open del -i 1,2,3 # 删除id为1、2、3的配置项
 [示例3]: open del -n aaa,bbb # 删除名称为aaa、bbb的配置项
+
+
 open tool-list|tl # 查看工具列表
 open tl -f <filterKeyWords> # 按关键字过滤工具列表
 [示例1]: open tl # 列出全部工具
 [示例2]: open tl -f vscode # 列出名称中包含vscode的工具
+
+
 open tool-add|ta <toolName, toolPath> # 添加工具
-[示例]: open ta vscode,c:/Users/admin/AppData/Local/Programs/Microsoft VS Code/Code.exe # 添加vscode工具，路径为c:/Users/admin/AppData/Local/Programs/Microsoft VS Code/Code.exe
+[示例]: open ta typora,D:/soft/Typora/Typora.exe # 添加typora工具,应用路径 使用typora打开目录或文件:open -t typora <id|name|description>
+
+
 open tool-del|td <toolName> # 删除工具
 [示例]: open td vscode # 删除名称为vscode的工具
+
+
 open edit # 手动编辑配置文件
 open reset # 恢复配置文件为默认值
 open help # 查看帮助文档
 open me # 打开源代码目录
+```
 
+## 配置文件
+```bash
 # 添加自定义命令行
 # 1. open edit打开配置文件
 # 2. 在配置项中添加userCommand字段，数据结构为{ "name": "", "command": [] }数组
@@ -74,4 +101,18 @@ open me # 打开源代码目录
   ]
 # 3. 保存并退出
 # 4. 打开命令行输入open push或open -c push即可执行自定义命令行
+
+
+# 修改默认配置
+# 1. open edit打开配置文件
+# 2. 修改配置项
+"options": {
+    # 输入open ls时默认显示的列，可以添加列、修改显示的顺序
+    "defaultTableColumns": ["id", "name", "tool", "description", "useCount"],
+    # 输入open ls时默认排序的列名，注：如果输入不存在的列名，则不排序
+    "defaultTableSortBy": "id",
+    # 如果没有设置默认打开工具，则使用此配置项
+    "defaultTool": "explorer"
+  }
+# 3. 保存并退出
 ```

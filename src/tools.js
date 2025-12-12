@@ -7,6 +7,15 @@ const lodash = require("lodash");
 const { Table } = require('console-table-printer');
 const os = require('os');
 
+function parseInput(input = '') {
+  // 如果包含逗号，则按逗号分隔，否则按空格分隔
+  if (input.includes(',')) {
+    return input.split(',');
+  } else {
+    return input.split(' ');
+  }
+}
+
 // 写入默认值,兼容旧版本
 function writeDefaultConfig() {
   const config = readConfig();
@@ -29,7 +38,7 @@ function readConfig(isDefault = false) {
     return {
       options: {
         version: getVersion(),
-        defaultTableColumns: ["id", "name", "useCount", "description"], // 默认显示的表格列
+        defaultTableColumns: ["id", "name", "tool", "description", "useCount"], // 默认显示的表格列
         defaultTableSortBy: "id", // 默认排序的列名，为空时默认按id排序
         defaultTool: "explorer",
       },
@@ -186,5 +195,6 @@ module.exports = {
   getID,
   printTable,
   execCommand,
-  writeDefaultConfig
+  writeDefaultConfig,
+  parseInput
 };

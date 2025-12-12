@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const program = require('commander')
 const lodash = require('lodash')
-const { getVersion } = require('../src/tools')
+const { getVersion, parseInput } = require('../src/tools')
 const {
   getList,
   add,
@@ -73,8 +73,10 @@ program
   .option('-n, --name <name>', '根据名称打开')
   .option('-d, --description <description>', '根据描述打开')
   .option('-c, --cmd <cmdName>', '执行命令行')
+  .option('-t, --tool <toolName>', '设置打开工具(临时)')
   .action((input, options) => {
     const config = getConfig()
+    config.tempTool = options.tool || ''
     if (options.id) {
       const isOpened = openById(config, options.id)
       if (isOpened) {
@@ -104,10 +106,7 @@ program
       return
     }
     if (input) {
-      const isOpened = open(config, input)
-      if (!isOpened) {
-        openCmd(config, input)
-      }
+      open(config, input)
     }
   })
 
@@ -123,7 +122,7 @@ program
   .option('-p, --path <path>', '添加路径')
   .description('添加指令')
   .action((input, opt) => {
-    const inputArr = (input || '').split(' ')
+    const inputArr = parseInput(input)
     const options = lodash.merge(opt || {}, program.opts()) 
     const name = options.name || inputArr[0] || ''
     const path = options.path || inputArr[1] || ''
@@ -136,28 +135,25 @@ program
 program
   .command('delete')
   .alias('del')
-  .argument('[name|id...]')
+  .argument('[name|id]')
   .option('-i, --id <id...>', '根据ID删除')
   .option('-n, --name <name...>', '根据名称删除')
   .description('删除指令')
   .action((input) => {
     const config = getConfig()
-    const inputArr = []
-    input.forEach((item) => {
-      inputArr.push(...item.split(' '))
-    })
+    const inputArr = parseInput(input)
     inputArr.forEach((item) => {
       del(config, item)
     })
     const options = program.opts()
     if (options.id) {
-      const delIds = options.id.split(' ')
+      const delIds = parseInput(options.id)
       delIds.forEach((id) => {
         delById(config, id)
       })
     }
     if (options.name) {
-      const delNames = options.name.split(' ')
+      const delNames = parseInput(options.name)
       delNames.forEach((name) => {
         delByName(config, name)
       })
@@ -179,7 +175,7 @@ program
   .argument('<toolName, toolPath>')
   .description('添加工具')
   .action((input) => {
-    const inputArr = input.split(' ')
+    const inputArr = parseInput(input)
     addTool(inputArr[0], inputArr[1])
   })
 

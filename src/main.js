@@ -145,11 +145,11 @@ function open(config, input) {
       return (item.name && item.name.toLowerCase().includes(input)) || (item.description && item.description.toLowerCase().includes(input))
     })
   }
-  if (!item) {
-    logRed(`${input} is not found in your userData.`)
-    return
+  if (item) {
+    return _open(config, item)
+  } else {
+    return openCmd(config, input)
   }
-  return _open(config, item)
 }
 
 // 添加指令
@@ -161,11 +161,11 @@ function add(name, dirPath, tool, description) {
   if (!config.userData) {
     config.userData = []
   }
-  if (!name) {
-    name = path.basename(dirPath)
-  }
   if (!dirPath) {
     dirPath = path.resolve('.')
+  }
+  if (!name) {
+    name = path.basename(dirPath)
   }
   const id = getID(config.userData)
   config.userData.push({
@@ -296,6 +296,7 @@ function openCode() {
 function _open(config, item) {
   const userTools = config.userTools || {}
   let tool
+  item.tool = config.tempTool || item.tool
   if (item.tool) {
     tool = userTools[item.tool]
     if (!tool) {
