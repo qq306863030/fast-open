@@ -110,15 +110,20 @@ function openByDescription(config, desc) {
   return _open(config, item)
 }
 // 打开命令行
-function openCmd(config, input, isWarning = true) {
+function openCmd(config, input) {
   if (!config.userCommand || !config.userCommand.length) {
-    isWarning && logRed('No data in your config.')
+    logRed('No data in your config.')
     return
   }
   input = input.trim().toLowerCase()
-  const cmdObj = config.userCommand.find(item => {
+  let cmdObj = config.userCommand.find(item => {
     return item.name.toLowerCase() === input
   })
+  if (!cmdObj) {
+    cmdObj = config.userCommand.find(item => {
+      return item.name.toLowerCase().includes(input)
+    })
+  }
   const cmdList = cmdObj && cmdObj.command
   if (cmdList && cmdList instanceof Array) {
     cmdList.forEach(cmd => {
@@ -126,7 +131,7 @@ function openCmd(config, input, isWarning = true) {
     })
     return true
   }
-  isWarning && logRed(`"${input}" is not found in your config.`)
+  logRed(`"${input}" is not found in your config.`)
   return false
 }
 // 根据id/名称/描述打开
@@ -140,18 +145,43 @@ function open(config, input) {
   let item = config.userData.find((item) => {
     return (String(item.id) === input) || (item.name && item.name.toLowerCase() === input) || (item.description && item.description.toLowerCase() === input)
   })
-  if (!item) {
-    const isOpened = openCmd(config, input, false)
-    if (isOpened) {
-      return true
+  if (item) {
+    return _open(config, item)
+  } else {
+    item = config.userCommand.find(item => {
+      return item.name.toLowerCase() === input
+    })
+    if (item) {
+      const cmdList = item.command
+      if (cmdList && cmdList instanceof Array) {
+        cmdList.forEach(cmd => {
+          execCommand(cmd)
+        })
+        return true
+      }
     }
   }
-  if (!item) {
-    item = config.userData.find((item) => {
-      return (item.name && item.name.toLowerCase().includes(input)) || (item.description && item.description.toLowerCase().includes(input))
+  item = config.userData.find((item) => {
+    return (item.name && item.name.toLowerCase().includes(input)) || (item.description && item.description.toLowerCase().includes(input))
+  })
+  if (item) {
+    return _open(config, item)
+  } else {
+    item = config.userCommand.find(item => {
+      return item.name.toLowerCase().includes(input) 
     })
+    if (item) {
+      const cmdList = item.command
+      if (cmdList && cmdList instanceof Array) {
+        cmdList.forEach(cmd => {
+          execCommand(cmd)
+        })
+        return true
+      }
+    }
   }
-  return _open(config, item)
+  logRed(`"${input}" is not found in your config.`)
+  return false
 }
 
 // 添加指令
