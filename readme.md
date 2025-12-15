@@ -14,10 +14,28 @@ npm install fast-open -g
 
 ## 快速开始
 ```bash 
-# 1. 进入任意目录打开命令行，输入open add
-# 2. 退出目录，输入open ls查看目录列表
-# 3. 输入open <id|name> 打开指定目录
-# 4. 输入open -t vscode <id|name> 使用vscode打开指定目录（需要安装vscode）
+#添加一个快速打开的目录
+## 1. 进入任意目录打开命令行，输入open add
+## 2. 退出目录，输入open ls查看目录列表
+## 3. 输入open <id|name> 打开指定目录
+## 4. 输入open -t vscode <id|name> 使用vscode打开指定目录（需要安装vscode）
+
+#添加一个快速打开的命令
+# 1. open edit打开配置文件
+# 2. 在配置项userCommand字段中添加命令行配置，数据结构为{ "name": "", "command": [] }数组
+"userCommand": [
+    {
+      "name": "push",
+      "command": [
+        "git pull",
+        "git add .",
+        "git commit -m 更新",
+        "git push"
+      ]
+    }
+  ]
+# 3. 保存并退出
+# 4. 打开命令行输入open push或open -c push即可执行自定义命令行
 ```
 
 ## 命令列表
@@ -69,7 +87,7 @@ open tl -f <filterKeyWords> # 按关键字过滤工具列表
 
 
 open tool-add|ta <toolName, toolPath> # 添加工具
-[示例]: open ta typora,D:/soft/Typora/Typora.exe # 添加typora工具,应用路径 使用typora打开目录或文件:open -t typora <id|name|description>
+[示例]: open ta typora,D:/soft/Typora/Typora.exe # 添加typora工具,应用路径 使用typora打开目录或文件:open -t typora <id|name|description>，注意：如果添加的目录路径中存在空格，需要使用双引号包裹：open ta "typora,D:/soft/Typora/Typora.exe"
 
 
 open tool-del|td <toolName> # 删除工具
@@ -84,25 +102,6 @@ open me # 打开源代码目录
 
 ## 配置文件
 ```bash
-# 添加自定义命令行
-# 1. open edit打开配置文件
-# 2. 在配置项中添加userCommand字段，数据结构为{ "name": "", "command": [] }数组
-# sample:
-"userCommand": [
-    {
-      "name": "push",
-      "command": [
-        "git pull",
-        "git add .",
-        "git commit -m 更新",
-        "git push"
-      ]
-    }
-  ]
-# 3. 保存并退出
-# 4. 打开命令行输入open push或open -c push即可执行自定义命令行
-
-
 # 修改默认配置
 # 1. open edit打开配置文件
 # 2. 修改配置项

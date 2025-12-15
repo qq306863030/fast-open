@@ -110,9 +110,9 @@ function openByDescription(config, desc) {
   return _open(config, item)
 }
 // 打开命令行
-function openCmd(config, input) {
+function openCmd(config, input, isWarning = true) {
   if (!config.userCommand || !config.userCommand.length) {
-    logRed('No data in your config.')
+    isWarning && logRed('No data in your config.')
     return
   }
   input = input.trim().toLowerCase()
@@ -126,7 +126,7 @@ function openCmd(config, input) {
     })
     return true
   }
-  logRed(`"${input}" is not found in your config.`)
+  isWarning && logRed(`"${input}" is not found in your config.`)
   return false
 }
 // 根据id/名称/描述打开
@@ -141,15 +141,17 @@ function open(config, input) {
     return (String(item.id) === input) || (item.name && item.name.toLowerCase() === input) || (item.description && item.description.toLowerCase() === input)
   })
   if (!item) {
+    const isOpened = openCmd(config, input, false)
+    if (isOpened) {
+      return true
+    }
+  }
+  if (!item) {
     item = config.userData.find((item) => {
       return (item.name && item.name.toLowerCase().includes(input)) || (item.description && item.description.toLowerCase().includes(input))
     })
   }
-  if (item) {
-    return _open(config, item)
-  } else {
-    return openCmd(config, input)
-  }
+  return _open(config, item)
 }
 
 // 添加指令
@@ -295,12 +297,12 @@ function openCode() {
 
 function _open(config, item) {
   const userTools = config.userTools || {}
-  let tool
-  item.tool = config.tempTool || item.tool
-  if (item.tool) {
-    tool = userTools[item.tool]
+  let tool = config.tempTool || item.tool
+  const tempTool = tool
+  if (tool) {
+    tool = userTools[tool]
     if (!tool) {
-      tool = item.tool
+      tool = tempTool
       if (tool === 'vscode') {
         tool = 'code'
       }
@@ -308,7 +310,7 @@ function _open(config, item) {
   } else {
     tool = (config.options && config.options.defaultTool && userTools[config.options.defaultTool]) || 'explorer' 
   }
-  execCommand(`${tool} "${item.dirPath}"`)
+  execCommand(`"${tool}" "${item.dirPath}"`)
   item.useCount++
   writeConfig(config)
   logGreen(`"${item.name},${item.dirPath}" has been opened.`)
