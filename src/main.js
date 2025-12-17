@@ -22,11 +22,43 @@ function getConfig() {
 function getList(config) {
   return config.userData || []
 }
+// 获取工具列表
+function getToolList(config, filterKeyWords = '') {
+  filterKeyWords = filterKeyWords.trim().toLowerCase()
+  const userTools = config.userTools || {}
+  const tools = Object.keys(userTools)
+  const list = []
+  for (const toolName of tools) {
+    if (filterKeyWords && !toolName.toLowerCase().includes(filterKeyWords)) {
+      continue
+    }
+    list.push({
+      name: toolName,
+      globalUse: userTools[toolName],
+    })
+  }
+  return list
+}
+
+// 获取命令列表
+function getCommandList(config, filterKeyWords = '') {
+  filterKeyWords = filterKeyWords.trim().toLowerCase()
+  const userTools = config.userCommand || []
+  const list = userTools.map(item => {
+    return {
+      name: item.name,
+      command: item.command && (Array.isArray(item.command) ? item.command.join(' && ') : item.command),
+    }
+  }).filter(item => {
+    return item.name.toLowerCase().includes(filterKeyWords) || item.command.toLowerCase().includes(filterKeyWords)
+  })
+  return list
+}
 
 // 根据列名排序
 function sortList(config, list, columnName) {
   if (!columnName) {
-    columnName = config.options.defaultTableSortBy || 'id'
+    columnName = config.options.defaultTableSortBy || ''
   }
   return lodash.sortBy(list, [columnName])
 }
@@ -126,9 +158,8 @@ function openCmd(config, input) {
   }
   const cmdList = cmdObj && cmdObj.command
   if (cmdList && cmdList instanceof Array) {
-    cmdList.forEach(cmd => {
-      execCommand(cmd)
-    })
+    const cmdStr = cmdList.join(' && ')
+    execCommand(cmdStr)
     return true
   }
   logRed(`"${input}" is not found in your config.`)
@@ -154,9 +185,8 @@ function open(config, input) {
     if (item) {
       const cmdList = item.command
       if (cmdList && cmdList instanceof Array) {
-        cmdList.forEach(cmd => {
-          execCommand(cmd)
-        })
+        const cmdStr = cmdList.join(' && ')
+        execCommand(cmdStr)
         return true
       }
     }
@@ -173,9 +203,8 @@ function open(config, input) {
     if (item) {
       const cmdList = item.command
       if (cmdList && cmdList instanceof Array) {
-        cmdList.forEach(cmd => {
-          execCommand(cmd)
-        })
+        const cmdStr = cmdList.join(' && ')
+        execCommand(cmdStr)
         return true
       }
     }
@@ -279,20 +308,16 @@ function delById(config, id) {
     logRed(`id = ${id} not found in your config.`)
   }
 }
-function getToolList(filterKeyWords = '') {
+function printCommandList(filterKeyWords = '') {
   const config = readConfig()
-  const userTools = config.userTools || {}
-  const tools = Object.keys(userTools)
-  const list = []
-  for (const toolName of tools) {
-    if (filterKeyWords && !toolName.includes(filterKeyWords)) {
-      continue
-    }
-    list.push({
-      name: toolName,
-      globalUse: userTools[toolName],
-    })
-  }
+  const list = getCommandList(config, filterKeyWords)
+  printTable(list)
+}
+
+
+function printToolList(filterKeyWords = '') {
+  const config = readConfig()
+  const list = getToolList(config, filterKeyWords)
   printTable(list)
 }
 function addTool(toolName, toolPath) {
@@ -364,10 +389,13 @@ module.exports = {
   del,
   delByName,
   delById,
+  getCommandList,
   getToolList,
   addTool,
   delTool,
   resetConfig,
   openCode,
   openDoc,
+  printToolList,
+  printCommandList,
 }

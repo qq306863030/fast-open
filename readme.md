@@ -47,7 +47,11 @@ open ls -a, --all 查看列表全部列
 open ls -r, --reverse 列表反转
 open ls -s, --sort <colomnName> 按列名排序列表
 open ls -f, --filter <filterKeyWords> 按关键字过滤列表
-[示例]: open ls -a -r -s useCount -f ai # 列出全部列，按列useCount排序, 反转列表，仅显示名称或描述中包含ai字符的项目
+open ls -d, --dir 查看目录列表（默认）
+open ls -t, --tool 查看工具列表
+open ls -c, --command 查看命令列表
+[示例1]: open ls -a -r -s useCount -f ai # 列出全部列，按列useCount排序, 反转列表，仅显示名称或描述中包含ai字符的项目
+[示例2]: open ls -c -f PUSH # 查看命令列表, 并从名称和命令中过滤“PUSH”关键字的项目
 
 
 open [name|id|description|cmd] # 快速打开指定名称的目录
@@ -79,6 +83,9 @@ open del -n, --name <name...> # 根据名称删除
 [示例2]: open del -i 1,2,3 # 删除id为1、2、3的配置项
 [示例3]: open del -n aaa,bbb # 删除名称为aaa、bbb的配置项
 
+open command-list|cl # 查看命令列表
+open cl -f <filterKeyWords> # 按关键字过滤命令列表
+[示例2]: open cl # 列出全部命令
 
 open tool-list|tl # 查看工具列表
 open tl -f <filterKeyWords> # 按关键字过滤工具列表

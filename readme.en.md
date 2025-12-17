@@ -42,61 +42,70 @@ npm install fast-open -g
 ```bash
 # Commands can be executed using op|open|fast-open
 
-open list|ls|l # View the directory list
+open list|ls|l # View directory list
 open ls -a, --all View all columns of the list
 open ls -r, --reverse Reverse the list
 open ls -s, --sort <colomnName> Sort the list by column name
 open ls -f, --filter <filterKeyWords> Filter the list by keywords
-[Example]: open ls -a -r -s useCount -f ai # List all columns, sort by the useCount column, reverse the list, and only display items whose name or description contains the character "ai"
+open ls -d, --dir View directory list (default)
+open ls -t, --tool View tool list
+open ls -c, --command View command list
+[Example 1]: open ls -a -r -s useCount -f ai # List all columns, sort by the useCount column, reverse the list, and only display items whose name or description contains the character "ai"
+[Example 2]: open ls -c -f PUSH # View the command list and filter items with the keyword "PUSH" in their name and command
 
 
 open [name|id|description|cmd] # Quickly open the directory with the specified name
 open -i, --id <id> Open by ID
 open -n, --name <name> Open by name
 open -d, --description <description> Open by description
-open -c, --cmd <cmdName> Execute the command line
-open -t, --tool <toolName> Set the default opening tool. You need to use a tool that can be executed directly in the console (such as notepad) or a custom tool in the configuration (refer to the "open tool-add" command). The default is explorer
+open -c, --cmd <cmdName> Execute command line
+open -t, --tool <toolName> Set the default opening tool, which needs to be a tool that can be executed directly in the console (such as notepad) or a custom tool in the configuration (refer to the "open tool-add" command), the default is explorer
 [Example 1]: open abc # Open the item whose id, name, description, or command list name is abc or contains abc
 [Example 2]: open -i 1 # Open the item with id 1
 [Example 3]: open -n abc # Open the item whose name is abc or contains abc
 [Example 4]: open -d abc # Open the item whose description is abc or contains abc
-[Example 5]: open -c push # Execute the command named push in the command list. You need to manually configure the command in the configuration file, refer to the example of adding a command line
+[Example 5]: open -c push # Execute the command named push in the command line list, which needs to be manually configured in the configuration file, refer to the example of adding command lines
 
 
-open add [name,path,tool,description] # Add a directory
-open add -n, --name <name> Add a name
-open add -p, --path <path> Add a path
-open add -t, --tool <toolName> Add an opening tool. You need to use a tool that can be executed directly in the console (such as notepad) or a custom tool in the configuration (refer to the "open tool-add" command). The default is explorer
-open add -d, --description <description> Add a description
-[Example 1]: open add # Will automatically add [current directory name][current directory path][""][""] to the configuration file
-[Example 2]: open add -n aaa -p c:/1.txt -t vscode -d bbb # Will automatically add [aaa,c:/1.txt,vscode,bbb] to the configuration file in the format [name,path,tool,description]
+open add [name,path,tool,description] # Add directory
+open add -n, --name <name> Add name
+open add -p, --path <path> Add path
+open add -t, --tool <toolName> Add opening tool, which needs to be a tool that can be executed directly in the console (such as notepad) or a custom tool in the configuration (refer to the "open tool-add" command), the default is explorer
+open add -d, --description <description> Add description
+[Example 1]: open add # Will automatically add [current directory name][current directory path][""][""] in the configuration file
+[Example 2]: open add -n aaa -p c:/1.txt -t vscode -d bbb # Will automatically add [aaa,c:/1.txt,vscode,bbb] in the configuration file [name,path,tool,description]
 
 
 open del [name|id...] # Delete configuration
 open del -i, --id <id...> # Delete by id
 open del -n, --name <name...> # Delete by name
-[Example 1]: open del aaa,bbb,ccc # Delete configuration items whose name or id is aaa, bbb, or ccc
-[Example 2]: open del -i 1,2,3 # Delete configuration items with id 1, 2, or 3
-[Example 3]: open del -n aaa,bbb # Delete configuration items with name aaa or bbb
+[Example 1]: open del aaa,bbb,ccc # Delete configuration items whose name or id is aaa, bbb, ccc
+[Example 2]: open del -i 1,2,3 # Delete configuration items with id 1, 2, 3
+[Example 3]: open del -n aaa,bbb # Delete configuration items with name aaa, bbb
 
 
-open tool-list|tl # View the tool list
-open tl -f <filterKeyWords> # Filter the tool list by keywords
+open command-list|cl # View command list
+open cl -f <filterKeyWords> # Filter command list by keywords
+[Example 2]: open cl # List all commands
+
+
+open tool-list|tl # View tool list
+open tl -f <filterKeyWords> # Filter tool list by keywords
 [Example 1]: open tl # List all tools
 [Example 2]: open tl -f vscode # List tools whose name contains vscode
 
 
-open tool-add|ta <toolName, toolPath> # Add a tool
-[Example]: open ta typora,D:/soft/Typora/Typora.exe # Add the typora tool. To open a directory or file with typora: open -t typora <id|name|description>. Note: If there are spaces in the added directory path, you need to enclose it in double quotes: open ta "typora,D:/soft/Typora/Typora.exe"
+open tool-add|ta <toolName, toolPath> # Add tool
+[Example]: open ta typora,D:/soft/Typora/Typora.exe # Add typora tool. To open a directory or file with typora: open -t typora <id|name|description>. Note: If there are spaces in the added directory path, you need to enclose it in double quotes: open ta "typora,D:/soft/Typora/Typora.exe"
 
 
-open tool-del|td <toolName> # Delete a tool
+open tool-del|td <toolName> # Delete tool
 [Example]: open td vscode # Delete the tool named vscode
 
 
 open edit # Manually edit the configuration file
 open reset # Restore the configuration file to default values
-open help # View the help documentation
+open help # View help documentation
 open me # Open the source code directory
 ```
 

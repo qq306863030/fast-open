@@ -39,7 +39,7 @@ function readConfig(isDefault = false) {
       options: {
         version: getVersion(),
         defaultTableColumns: ["id", "name", "tool", "description", "useCount"], // 默认显示的表格列
-        defaultTableSortBy: "id", // 默认排序的列名，为空时默认按id排序
+        defaultTableSortBy: "", // 默认排序的列名，为空时不排序
         defaultTool: "explorer",
       },
       userData: [],

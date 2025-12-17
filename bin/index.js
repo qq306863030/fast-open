@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const program = require('commander')
 const lodash = require('lodash')
-const { getVersion, parseInput } = require('../src/tools')
+const { getVersion, parseInput, printTable } = require('../src/tools')
 const {
   getList,
   add,
@@ -25,6 +25,9 @@ const {
   openByDescription,
   openCmd,
   openDoc,
+  printCommandList,
+  getCommandList,
+  printToolList,
 } = require('../src/main')
 
 program
@@ -53,6 +56,9 @@ program
   .command('list')
   .alias('ls')
   .alias('l')
+  .option('-d, --dir', '查看工具列表')
+  .option('-t, --tool', '查看工具列表')
+  .option('-c, --command', '查看命令列表')
   .option('-a, --all', '查看列表全部列')
   .option('-r, --reverse', '列表反转')
   .option('-s, --sort <colomnName>', '按列名排序列表')
@@ -60,15 +66,28 @@ program
   .description('查看列表')
   .action((options) => {
     const config = getConfig()
-    let list = getList(config)
-    list = sortList(config, list, options.sort)
-    options.reverse && reverseList(list)
-    options.filter && (list = filterList(list, options.filter))
-    printList(config, list, options.all)
+    if (options.tool) {
+      let list = getToolList(config, options.filter)
+      list = sortList(config, list, options.sort)
+      options.reverse && reverseList(list)
+      printTable(list)
+    } else if (options.command) {
+      let list = getCommandList(config, options.filter)
+      list = sortList(config, list, options.sort)
+      options.reverse && reverseList(list)
+      printTable(list)
+    } else {
+      let list = getList(config)
+      list = sortList(config, list, options.sort)
+      options.reverse && reverseList(list)
+      options.filter && (list = filterList(list, options.filter))
+      printList(config, list, options.all)
+    }
   })
 
 program
   .argument('[name|id|description|cmd]')
+  .passThroughOptions()
   .option('-i, --id <id>', '根据ID打开')
   .option('-n, --name <name>', '根据名称打开')
   .option('-d, --description <description>', '根据描述打开')
@@ -77,7 +96,7 @@ program
   .action((input, options) => {
     const config = getConfig()
     config.tempTool = options.tool || ''
-    if (options.id) {
+    if (options.id || typeof options.id === 'number') {
       const isOpened = openById(config, options.id)
       if (isOpened) {
         return
@@ -121,9 +140,8 @@ program
   .option('-t, --tool <tool>', '添加工具')
   .option('-p, --path <path>', '添加路径')
   .description('添加指令')
-  .action((input, opt) => {
+  .action((input, options) => {
     const inputArr = parseInput(input)
-    const options = lodash.merge(opt || {}, program.opts()) 
     const name = options.name || inputArr[0] || ''
     const path = options.path || inputArr[1] || ''
     const tool = options.tool || inputArr[2] || ''
@@ -146,7 +164,7 @@ program
       del(config, item)
     })
     const options = program.opts()
-    if (options.id) {
+    if (options.id || typeof options.id === 'number') {
       const delIds = parseInput(options.id)
       delIds.forEach((id) => {
         delById(config, id)
@@ -159,6 +177,14 @@ program
       })
     }
   })
+program
+  .command('command-list')
+  .alias('cl')
+  .option('-f, --filter <filterKeyWords>', '过滤命令列表')
+  .description('查看工具列表')
+  .action((options) => {
+    printCommandList(options.filter)
+  })
 
 program
   .command('tool-list')
@@ -166,7 +192,7 @@ program
   .option('-f, --filter <filterKeyWords>', '过滤工具列表')
   .description('查看工具列表')
   .action((options) => {
-    getToolList(options.filter)
+    printToolList(options.filter)
   })
 
 program
