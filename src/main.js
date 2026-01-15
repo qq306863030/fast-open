@@ -365,7 +365,13 @@ function _open(config, item) {
   } else {
     tool = (config.options && config.options.defaultTool && userTools[config.options.defaultTool]) || 'explorer' 
   }
-  execCommand(`"${tool}" "${item.dirPath}"`)
+  if (tool.includes(' ')) {
+    tool = `"${tool}"`
+  }
+  if (item.dirPath.includes(' ')) {
+    item.dirPath = `"${item.dirPath}"`
+  }
+  execCommand(`${tool} ${item.dirPath}`)
   item.useCount++
   writeConfig(config)
   logGreen(`"${item.name},${item.dirPath}" has been opened.`)

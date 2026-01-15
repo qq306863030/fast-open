@@ -14,13 +14,13 @@ npm install fast-open -g
 
 ## 快速开始
 ```bash 
-#添加一个快速打开的目录
+# 添加一个快速打开的目录
 ## 1. 进入任意目录打开命令行，输入open add
 ## 2. 退出目录，输入open ls查看目录列表
 ## 3. 输入open <id|name> 打开指定目录
 ## 4. 输入open -t vscode <id|name> 使用vscode打开指定目录（需要安装vscode）
 
-#添加一个快速打开的命令
+# 添加一个快速打开的命令
 # 1. open edit打开配置文件
 # 2. 在配置项userCommand字段中添加命令行配置，数据结构为{ "name": "", "command": [] }数组
 "userCommand": [
@@ -36,6 +36,10 @@ npm install fast-open -g
   ]
 # 3. 保存并退出
 # 4. 打开命令行输入open push或open -c push即可执行自定义命令行
+
+# 添加一个网站
+## 1. 输入open add npm,https://www.npmjs.com/,start,npm官网
+## 2. 输入open npm打开npm官网
 ```
 
 ## 命令列表

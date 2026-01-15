@@ -97,6 +97,7 @@ function getConfigPath() {
 
 // 执行一段命令
 function execCommand(command) {
+  console.log("执行命令：" + command)
   return shell.exec(command).stdout.trim();
 }
 

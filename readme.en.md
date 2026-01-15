@@ -36,6 +36,10 @@ npm install fast-open -g
   ]
 # 3. Save and exit
 # 4. Open the command line and enter open push or open -c push to execute the custom command
+
+# 添加一个网站
+## 1. Enter "open add npm,https://www.npmjs.com/,start,npm website"
+## 2. Enter "open npm" to open the npm website
 ```
 
 ## Command List
